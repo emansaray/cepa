@@ -11,7 +11,7 @@
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:studio": "prisma studio",
     "seed": "node prisma/seed.js",
-    sqlite:generate": "prisma generate --schema=prisma/schema.sqlite.prisma",
+    "sqlite:generate": "prisma generate --schema=prisma/schema.sqlite.prisma",
     "sqlite:migrate": "prisma migrate dev --name init --schema=prisma/schema.sqlite.prisma",
     "sqlite:studio": "prisma studio --schema=prisma/schema.sqlite.prisma",
     "postgres:generate": "prisma generate --schema=prisma/schema.postgres.prisma",

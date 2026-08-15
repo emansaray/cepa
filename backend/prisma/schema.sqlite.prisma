@@ -1,0 +1,107 @@
+// CEPA — SQLite variant for local prototyping without a SQL Server install.
+// Same models as schema.prisma, minus SQL-Server-specific @db.NVarChar
+// annotations (SQLite has no fixed-length string types to declare).
+//
+// Usage: point DATABASE_URL at a local file, then run Prisma commands
+// with --schema=prisma/schema.sqlite.prisma (see package.json scripts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enum type, so Prisma doesn't support the `enum` block
+// on this provider — role is a plain string instead. The app code already
+// compares role as a string ("MEMBER" / "MODERATOR" / "ADMIN"), so nothing
+// else needs to change when switching between this file and schema.prisma.
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  bio          String?
+  role         String   @default("MEMBER")
+  createdAt    DateTime @default(now())
+
+  threads Thread[]
+  replies Reply[]
+  votes   Vote[]
+
+  @@map("users")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  description String
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  threads Thread[]
+
+  @@map("categories")
+}
+
+model Thread {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  isPinned  Boolean  @default(false)
+  isLocked  Boolean  @default(false)
+  viewCount Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  replies Reply[]
+  votes   Vote[]
+
+  @@index([categoryId])
+  @@map("threads")
+}
+
+model Reply {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  threadId Int
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  votes    Vote[]
+
+  @@index([threadId])
+  @@map("replies")
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  threadId Int?
+  thread   Thread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  replyId Int?
+  reply   Reply? @relation(fields: [replyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, threadId])
+  @@unique([userId, replyId])
+  @@map("votes")
+}

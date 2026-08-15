@@ -1,0 +1,238 @@
+/* CEPA design tokens — civic register / ledger aesthetic
+   Palette: cool institutional blues and greens, no warm-cream defaults. */
+
+:root {
+  /* Color */
+  --ink-navy: #10233d;
+  --civic-blue: #1b4b66;
+  --civic-blue-dim: #163d54;
+  --progress-green: #2e7d5b;
+  --progress-green-dim: #256549;
+  --signal-amber: #c77d2b;
+  --ledger-bg: #eaf0ec;
+  --paper: #ffffff;
+  --ink-text: #17221e;
+  --ink-text-soft: #435049;
+  --hairline: #c7d3cb;
+  --hairline-strong: #9fb0a5;
+  --danger: #a8382c;
+
+  /* Type */
+  --font-display: "Newsreader", Georgia, serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+
+  /* Layout */
+  --radius: 3px;
+  --max-width: 920px;
+  --shadow-card: 0 1px 2px rgba(16, 35, 61, 0.06), 0 1px 0 rgba(16, 35, 61, 0.03);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--ledger-bg);
+  color: var(--ink-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink-navy);
+  margin: 0 0 0.4em 0;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--civic-blue);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Visible keyboard focus everywhere — accessibility floor */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--progress-green);
+  outline-offset: 2px;
+}
+
+.record-no {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-text-soft);
+  letter-spacing: 0.02em;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.55em 1.1em;
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.btn-primary {
+  background: var(--civic-blue);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--civic-blue-dim);
+  text-decoration: none;
+}
+
+.btn-accent {
+  background: var(--progress-green);
+  color: #fff;
+}
+.btn-accent:hover {
+  background: var(--progress-green-dim);
+  text-decoration: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--civic-blue);
+  border-color: var(--hairline-strong);
+}
+.btn-ghost:hover {
+  background: rgba(27, 75, 102, 0.06);
+  text-decoration: none;
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border-color: transparent;
+}
+.btn-danger:hover {
+  background: rgba(168, 56, 44, 0.08);
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  margin-bottom: 1rem;
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-navy);
+}
+
+.field input,
+.field textarea,
+.field select {
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius);
+  padding: 0.6em 0.7em;
+  background: var(--paper);
+  color: var(--ink-text);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 6em;
+  font-family: var(--font-body);
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--civic-blue);
+  box-shadow: 0 0 0 3px rgba(27, 75, 102, 0.14);
+}
+
+.error-banner {
+  background: #fbeceA;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius);
+  padding: 0.7em 1em;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--progress-green-dim);
+}
+
+.hairline {
+  border: none;
+  border-top: 1px solid var(--hairline);
+  margin: 0;
+}
+
+.hairline-double {
+  border-bottom: 3px double var(--hairline-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

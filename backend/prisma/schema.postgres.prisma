@@ -1,0 +1,119 @@
+// CEPA — Community Evidence for Progressive Action
+// Prisma schema targeting Postgres (used for free-tier hosting, e.g. Neon)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  bio          String?
+  role         Role     @default(MEMBER)
+  createdAt    DateTime @default(now())
+
+  threads    Thread[]
+  replies    Reply[]
+  votes      Vote[]
+  mediaItems MediaItem[]
+
+  @@map("users")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  description String
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  threads Thread[]
+
+  @@map("categories")
+}
+
+model Thread {
+  id         Int      @id @default(autoincrement())
+  title      String
+  body       String
+  isPinned   Boolean  @default(false)
+  isLocked   Boolean  @default(false)
+  viewCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  replies Reply[]
+  votes   Vote[]
+
+  @@index([categoryId])
+  @@map("threads")
+}
+
+model Reply {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  threadId Int
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  votes    Vote[]
+
+  @@index([threadId])
+  @@map("replies")
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  threadId Int?
+  thread   Thread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  replyId Int?
+  reply   Reply? @relation(fields: [replyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, threadId])
+  @@unique([userId, replyId])
+  @@map("votes")
+}
+
+model MediaItem {
+  id        Int      @id @default(autoincrement())
+  url       String
+  type      String
+  caption   String?
+  createdAt DateTime @default(now())
+
+  uploaderId Int
+  uploader   User @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  @@map("media_items")
+}
